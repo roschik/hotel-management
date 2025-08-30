@@ -22,7 +22,7 @@ var uri = new Uri(connectionString);
 var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder
 {
     Host = uri.Host,
-    Port = uri.Port,
+    Port = uri.Port == -1 ? 5432 : uri.Port,
     Database = uri.AbsolutePath.Trim('/'),
     Username = uri.UserInfo.Split(':')[0],
     Password = uri.UserInfo.Split(':')[1]
