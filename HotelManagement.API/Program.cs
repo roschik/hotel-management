@@ -51,9 +51,12 @@ builder.Services.AddCors(options =>
 {
     options.AddPolicy("AllowReactApp", builder =>
     {
-        builder.WithOrigins("http://localhost:3000")
-               .AllowAnyHeader()
-               .AllowAnyMethod();
+        builder.WithOrigins(
+                "http://localhost:3000",
+                "https://hotel-management-client-5584.onrender.com"
+            )
+            .AllowAnyHeader()
+            .AllowAnyMethod();
     });
 });
 
@@ -77,11 +80,8 @@ builder.Services.AddSwaggerGen(c =>
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
-if (app.Environment.IsDevelopment())
-{
-    app.UseSwagger();
-    app.UseSwaggerUI();
-}
+app.UseSwagger();
+app.UseSwaggerUI();
 
 app.UseCors("AllowReactApp");
 app.UseStaticFiles();
@@ -98,7 +98,12 @@ app.UseStaticFiles(new StaticFileOptions
     RequestPath = "/uploads",
     OnPrepareResponse = ctx =>
     {
-        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+        var allowedOrigins = new[] { "http://localhost:3000", "https://hotel-management-client-5584.onrender.com" };
+        var origin = ctx.Context.Request.Headers["Origin"].ToString();
+        if (allowedOrigins.Contains(origin))
+        {
+            ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", origin);
+        }
         ctx.Context.Response.Headers.Add("Access-Control-Allow-Methods", "GET");
         ctx.Context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
     }
