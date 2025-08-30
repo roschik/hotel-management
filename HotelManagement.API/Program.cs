@@ -11,29 +11,12 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
-Console.WriteLine($"DATABASE_URL value: '{connectionString}'");
-Console.WriteLine($"DATABASE_URL length: {connectionString?.Length ?? 0}");
-
-if (string.IsNullOrEmpty(connectionString))
-    throw new InvalidOperationException("DATABASE_URL environment variable not found or empty.");
-
-var uri = new Uri(connectionString);
-var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder
-{
-    Host = uri.Host,
-    Port = uri.Port == -1 ? 5432 : uri.Port,
-    Database = uri.AbsolutePath.Trim('/'),
-    Username = uri.UserInfo.Split(':')[0],
-    Password = uri.UserInfo.Split(':')[1]
-};
-
-var processedConnectionString = connectionStringBuilder.ToString();
-Console.WriteLine($"Processed connection string: {processedConnectionString}");
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+    ?? throw new InvalidOperationException("DATABASE_URL environment variable not found.");
 
 // Database configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(processedConnectionString));
+    options.UseNpgsql(connectionString));
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
