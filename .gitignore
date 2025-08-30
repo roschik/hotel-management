@@ -1,11 +1,35 @@
-echo "# .NET Core" > .gitignore
-echo "bin/" >> .gitignore
-echo "obj/" >> .gitignore
-echo "*.user" >> .gitignore
-echo ".vs/" >> .gitignore
-echo "# Node.js" >> .gitignore
-echo "node_modules/" >> .gitignore
-echo "build/" >> .gitignore
-echo ".env" >> .gitignore
-echo ".env.local" >> .gitignore
-echo "npm-debug.log*" >> .gitignore
+# Build outputs
+**/bin/
+**/obj/
+**/Debug/
+**/Release/
+
+# Node modules
+**/node_modules/
+
+# React build
+**/build/
+**/dist/
+
+# IDE files
+**/.vs/
+**/.vscode/
+**/.idea/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Environment variables
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Package lock files (optional)
+# package-lock.json
+# yarn.lock
