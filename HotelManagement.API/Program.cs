@@ -18,9 +18,22 @@ Console.WriteLine($"DATABASE_URL length: {connectionString?.Length ?? 0}");
 if (string.IsNullOrEmpty(connectionString))
     throw new InvalidOperationException("DATABASE_URL environment variable not found or empty.");
 
+var uri = new Uri(connectionString);
+var connectionStringBuilder = new Npgsql.NpgsqlConnectionStringBuilder
+{
+    Host = uri.Host,
+    Port = uri.Port,
+    Database = uri.AbsolutePath.Trim('/'),
+    Username = uri.UserInfo.Split(':')[0],
+    Password = uri.UserInfo.Split(':')[1]
+};
+
+var processedConnectionString = connectionStringBuilder.ToString();
+Console.WriteLine($"Processed connection string: {processedConnectionString}");
+
 // Database configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(processedConnectionString));
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
