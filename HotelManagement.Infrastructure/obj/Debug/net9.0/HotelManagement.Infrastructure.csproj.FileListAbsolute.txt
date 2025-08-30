@@ -1,0 +1,17 @@
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Infrastructure.deps.json
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Infrastructure.runtimeconfig.json
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Infrastructure.dll
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Infrastructure.pdb
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Core.dll
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\bin\Debug\net9.0\HotelManagement.Core.pdb
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.csproj.AssemblyReference.cache
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.AssemblyInfoInputs.cache
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.AssemblyInfo.cs
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.csproj.CoreCompileInputs.cache
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelMan.3E78A6F6.Up2Date
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.dll
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\refint\HotelManagement.Infrastructure.dll
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.pdb
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\HotelManagement.Infrastructure.genruntimeconfig.cache
+C:\Users\P527\Desktop\HotelManagement\HotelManagement.Infrastructure\obj\Debug\net9.0\ref\HotelManagement.Infrastructure.dll

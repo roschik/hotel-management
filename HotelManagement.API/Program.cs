@@ -1,0 +1,111 @@
+using AutoMapper;
+using HotelManagement.Core.Interfaces;
+using HotelManagement.Core.Interfaces.Services;
+using HotelManagement.Core.Services;
+using HotelManagement.Infrastructure.Data;
+using HotelManagement.Infrastructure.Mappings;
+using HotelManagement.Infrastructure.Repositories;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.OpenApi.Models;
+using Microsoft.Extensions.FileProviders;
+
+var builder = WebApplication.CreateBuilder(args);
+
+// Database configuration
+builder.Services.AddDbContext<ApplicationDbContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Register repositories
+builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
+builder.Services.AddScoped<IBookingRepository, BookingRepository>();
+builder.Services.AddScoped<IRoomRepository, RoomRepository>();
+builder.Services.AddScoped<IGuestRepository, GuestRepository>();
+builder.Services.AddScoped<IServiceRepository, ServiceRepository>();
+builder.Services.AddScoped<IEmployeeRepository, EmployeeRepository>();
+builder.Services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
+builder.Services.AddScoped<IServiceSaleRepository, ServiceSaleRepository>();
+builder.Services.AddScoped<IStayRepository, StayRepository>();
+builder.Services.AddScoped<ICitizenshipRepository, CitizenshipRepository>();
+
+// Register services
+builder.Services.AddScoped<IBookingService, BookingService>();
+builder.Services.AddScoped<IRoomService, RoomService>();
+builder.Services.AddScoped<IGuestService, GuestService>();
+builder.Services.AddScoped<IServiceService, ServiceService>();
+builder.Services.AddScoped<IEmployeeService, EmployeeService>();
+builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+builder.Services.AddScoped<IAnalyticsService, AnalyticsService>();
+builder.Services.AddScoped<IRoomTypeService, RoomTypeService>();
+builder.Services.AddScoped<IServiceSaleService, ServiceSaleService>();
+builder.Services.AddScoped<IStayService, StayService>();
+builder.Services.AddScoped<ICitizenshipService, CitizenshipService>();
+
+builder.Services.AddControllers();
+// AutoMapper configuration
+builder.Services.AddAutoMapper(cfg => cfg.AddProfile<MappingProfile>());
+
+builder.Services.AddAuthorization();
+
+// CORS configuration
+builder.Services.AddCors(options =>
+{
+    options.AddPolicy("AllowReactApp", builder =>
+    {
+        builder.WithOrigins("http://localhost:3000")
+               .AllowAnyHeader()
+               .AllowAnyMethod();
+    });
+});
+
+// Swagger configuration
+builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddSwaggerGen(c =>
+{
+    c.SwaggerDoc("v1", new OpenApiInfo
+    {
+        Title = "Hotel Management API",
+        Version = "v1",
+        Description = "API ",
+        Contact = new OpenApiContact
+        {
+            Name = "Администратор",
+            Email = "admin@hotelmanagement.com"
+        }
+    });
+});
+
+var app = builder.Build();
+
+// Configure the HTTP request pipeline.
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+}
+
+app.UseCors("AllowReactApp");
+app.UseStaticFiles();
+
+var uploadsPath = Path.Combine(app.Environment.WebRootPath ?? app.Environment.ContentRootPath, "uploads");
+if (!Directory.Exists(uploadsPath))
+{
+    Directory.CreateDirectory(uploadsPath);
+}
+
+app.UseStaticFiles(new StaticFileOptions
+{
+    FileProvider = new PhysicalFileProvider(uploadsPath),
+    RequestPath = "/uploads",
+    OnPrepareResponse = ctx =>
+    {
+        ctx.Context.Response.Headers.Add("Access-Control-Allow-Origin", "http://localhost:3000");
+        ctx.Context.Response.Headers.Add("Access-Control-Allow-Methods", "GET");
+        ctx.Context.Response.Headers.Add("Access-Control-Allow-Headers", "*");
+    }
+});
+
+app.UseAuthorization();
+
+app.MapControllers();
+
+app.Run();

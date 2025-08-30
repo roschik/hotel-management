@@ -1,0 +1,11 @@
+echo "# .NET Core" > .gitignore
+echo "bin/" >> .gitignore
+echo "obj/" >> .gitignore
+echo "*.user" >> .gitignore
+echo ".vs/" >> .gitignore
+echo "# Node.js" >> .gitignore
+echo "node_modules/" >> .gitignore
+echo "build/" >> .gitignore
+echo ".env" >> .gitignore
+echo ".env.local" >> .gitignore
+echo "npm-debug.log*" >> .gitignore
