@@ -11,8 +11,12 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? throw new InvalidOperationException("DATABASE_URL environment variable not found.");
+var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL");
+Console.WriteLine($"DATABASE_URL value: '{connectionString}'");
+Console.WriteLine($"DATABASE_URL length: {connectionString?.Length ?? 0}");
+
+if (string.IsNullOrEmpty(connectionString))
+    throw new InvalidOperationException("DATABASE_URL environment variable not found or empty.");
 
 // Database configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
