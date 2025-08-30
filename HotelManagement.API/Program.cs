@@ -11,12 +11,25 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var connectionString = Environment.GetEnvironmentVariable("DATABASE_URL")
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
     ?? throw new InvalidOperationException("DATABASE_URL environment variable not found.");
+
+if (!databaseUrl.Contains(":5432") && !databaseUrl.Contains("@"))
+{
+    databaseUrl = databaseUrl.Replace("@", ":5432@");
+}
+else if (!databaseUrl.Contains(":5432"))
+{
+    var parts = databaseUrl.Split('@');
+    if (parts.Length == 2)
+    {
+        databaseUrl = $"{parts[0]}@{parts[1].Split('/')[0]}:5432/{parts[1].Split('/')[1]}";
+    }
+}
 
 // Database configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(connectionString));
+    options.UseNpgsql(databaseUrl));
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
