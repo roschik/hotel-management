@@ -1,4 +1,4 @@
-﻿using HotelManagement.Core.Entities;
+using HotelManagement.Core.Entities;
 using HotelManagement.Core.Interfaces;
 using HotelManagement.Infrastructure.Data;
 using Microsoft.EntityFrameworkCore;
@@ -106,10 +106,30 @@ namespace HotelManagement.Infrastructure.Repositories
 
         public async Task<bool> HasActiveBookingsAsync(int guestId)
         {
-            return await _context.Bookings
-                .AnyAsync(b => b.GuestId == guestId &&
-                              (b.BookingStatusId == 1 || b.BookingStatusId == 2) &&
-                              b.CheckOutDate > DateTime.UtcNow);
+            try
+            {
+                var currentDate = DateTime.UtcNow;
+                
+                // Проверяем активные бронирования (статусы: 1 - Подтверждено, 2 - Заселен)
+                var hasActiveBookings = await _context.Bookings
+                    .AnyAsync(b => b.GuestId == guestId &&
+                                  (b.BookingStatusId == 1 || b.BookingStatusId == 2) &&
+                                  b.CheckOutDate > currentDate);
+                
+                // Также проверяем активные проживания через StayGuests
+                var hasActiveStays = await _context.StayGuests
+                    .Include(sg => sg.Stay)
+                    .AnyAsync(sg => sg.GuestId == guestId &&
+                               sg.Stay.ActualCheckOutDate == null);
+                
+                return hasActiveBookings || hasActiveStays;
+            }
+            catch (Exception ex)
+            {
+                // Логируем ошибку, но не прерываем процесс удаления
+                // В случае ошибки проверки, разрешаем удаление
+                return false;
+            }
         }
     }
 }

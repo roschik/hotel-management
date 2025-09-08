@@ -1,3 +1,7 @@
+В настоящий момент приложение доступно: 
+Клиент: https://hotel-management-client-5584.onrender.com/
+Сервер: https://hotel-management-api-dpy7.onrender.com/swagger/index.html
+
 # Инструкция по развертыванию проекта Hotel Management
 
 ## Требования

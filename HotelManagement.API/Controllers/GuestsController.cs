@@ -1,4 +1,4 @@
-﻿using HotelManagement.Core.DTOs;
+using HotelManagement.Core.DTOs;
 using HotelManagement.Core.Interfaces.Services;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -13,10 +13,12 @@ namespace HotelManagement.API.Controllers
     public class GuestsController : ControllerBase
     {
         private readonly IGuestService _guestService;
+        private readonly ILogger<GuestsController> _logger;
 
-        public GuestsController(IGuestService guestService)
+        public GuestsController(IGuestService guestService, ILogger<GuestsController> logger)
         {
             _guestService = guestService;
+            _logger = logger;
         }
 
         [HttpGet]
@@ -108,16 +110,25 @@ namespace HotelManagement.API.Controllers
         {
             try
             {
+                _logger.LogInformation("Attempting to delete guest with ID: {GuestId}", id);
                 await _guestService.DeleteGuestAsync(id);
+                _logger.LogInformation("Successfully deleted guest with ID: {GuestId}", id);
                 return NoContent();
             }
             catch (KeyNotFoundException ex)
             {
+                _logger.LogWarning("Guest with ID {GuestId} not found: {Message}", id, ex.Message);
                 return NotFound(ex.Message);
             }
             catch (InvalidOperationException ex)
             {
+                _logger.LogWarning("Cannot delete guest with ID {GuestId}: {Message}", id, ex.Message);
                 return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(ex, "Unexpected error occurred while deleting guest with ID: {GuestId}", id);
+                return StatusCode(500, "An unexpected error occurred while deleting the guest.");
             }
         }
 
