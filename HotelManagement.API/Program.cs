@@ -11,25 +11,31 @@ using Microsoft.Extensions.FileProviders;
 
 var builder = WebApplication.CreateBuilder(args);
 
-var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL")
-    ?? throw new InvalidOperationException("DATABASE_URL environment variable not found.");
+// Database configuration
+string connectionString;
+var databaseUrl = Environment.GetEnvironmentVariable("DATABASE_URL");
 
-if (!databaseUrl.Contains(":5432") && !databaseUrl.Contains("@"))
+if (!string.IsNullOrEmpty(databaseUrl))
 {
-    databaseUrl = databaseUrl.Replace("@", ":5432@");
-}
-else if (!databaseUrl.Contains(":5432"))
-{
-    var parts = databaseUrl.Split('@');
-    if (parts.Length == 2)
+    try
     {
-        databaseUrl = $"{parts[0]}@{parts[1].Split('/')[0]}:5432/{parts[1].Split('/')[1]}";
+        var uri = new Uri(databaseUrl);
+        connectionString = $"Host={uri.Host};Port={uri.Port};Database={uri.AbsolutePath.Trim('/')};Username={uri.UserInfo.Split(':')[0]};Password={uri.UserInfo.Split(':')[1]};SSL Mode=Require;Trust Server Certificate=true";
+    }
+    catch (Exception ex)
+    {
+        throw new InvalidOperationException($"Invalid DATABASE_URL format: {ex.Message}");
     }
 }
+else
+{
+    // Fallback to connection string from appsettings
+    connectionString = builder.Configuration.GetConnectionString("DefaultConnection")
+        ?? throw new InvalidOperationException("No database connection string found in DATABASE_URL or DefaultConnection.");
+}
 
-// Database configuration
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
-    options.UseNpgsql(databaseUrl));
+    options.UseNpgsql(connectionString));
 
 // Register repositories
 builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
